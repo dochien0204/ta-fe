@@ -1,96 +1,126 @@
-import React from "react";
-import Board, { moveCard } from "@lourenci/react-kanban";
-import "@lourenci/react-kanban/dist/styles.css";
+import Board from '@lourenci/react-kanban';
+import '@lourenci/react-kanban/dist/styles.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+import { axiosInstance } from '../api';
+import { setLoading } from '../slices/common';
+import { message } from 'antd';
 
 export default function KanbanBoard() {
-  const board = {
-    columns: [
-      {
-        id: 1,
-        title: "Backlog",
-        cards: [
-          {
-            id: 1,
-            title: "E-mail after registration so that I can confirm my",
-            description:
-              "Task Descriptions are used during project planning, project execution and project control. During project planning the task descriptions are used for scope planning and creating estimates. During project execution the task description is used by those doing the activities to ensure they are doing the work correctly.",
-            type: "Development",
-          },
-          {
-            id: 2,
-            title: "Card title 2",
-            description: "Card content",
-          },
-          {
-            id: 3,
-            title: "Card title 3",
-            description: "Card content",
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "Doing",
-        cards: [
-          {
-            id: 9,
-            title: "Card title 9",
-            description: "Card content",
-          },
-        ],
-      },
-      {
-        id: 3,
-        title: "Q&A",
-        cards: [
-          {
-            id: 10,
-            title: "Card title 10",
-            description: "Card content",
-          },
-          {
-            id: 11,
-            title: "Card title 11",
-            description: "Card content",
-          },
-        ],
-      },
-      {
-        id: 4,
-        title: "Production",
-        cards: [
-          {
-            id: 12,
-            title: "Card title 12",
-            description: "Card content",
-          },
-          {
-            id: 13,
-            title: "Card title 13",
-            description: "Card content",
-          },
-        ],
-      }
-    ],
+  const [messageApi, contextHolder] = message.useMessage();
+  const [board, setBoard] = useState({ columns: [] });
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
+  const dispatch = useDispatch();
+
+  const getListTask = async () => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get('/api/task/list', {
+        params: {
+          projectId,
+        },
+      });
+      const listTask = response.data.results;
+      const newBoard = listTask.map((item) => {
+        return {
+          id: item.status.id,
+          title: item.status.name,
+          cards: (item.listTask || []).map((task) => ({
+            id: task.id,
+            title: task.name,
+            description: task.description,
+          })),
+        };
+      });
+      setBoard({ columns: newBoard });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
+  const updateListTask = async (payload) => {
+    try {
+      dispatch(setLoading(true));
+
+      await axiosInstance.put('/api/task/update-status', payload);
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: 'Update Status failed. Please try again later!',
+      });
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const handleCardDragEnd = (item, card, source) => {
+    const newBoard = { columns: [...board.columns] };
+    const currentColumn = newBoard.columns.find(
+      (column) => column.id === card.fromColumnId
+    );
+    const targetColumn = newBoard.columns.find(
+      (column) => column.id === source.toColumnId
+    );
+
+    currentColumn.cards.splice(card.fromPosition, 1);
+    targetColumn.cards.splice(source.toPosition, 0, item);
+
+    setBoard(newBoard);
+
+    if (currentColumn.id !== targetColumn.id) {
+      updateListTask({
+        id: item.id,
+        statusId: targetColumn.id,
+      });
+    }
+  };
+
+  const onRemoveTask = async (item) => {
+    try {
+      dispatch(setLoading(true));
+      await axiosInstance.delete(`/api/task/delete`, {
+        params: {
+          taskId: item.id,
+        },
+      });
+
+      const newBoard = { columns: [...board.columns] };
+      newBoard.columns.forEach((column) => {
+        const index = column.cards.findIndex((card) => card.id === item.id);
+        if (index !== -1) {
+          column.cards.splice(index, 1);
+        }
+      });
+
+      setBoard(newBoard);
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: 'Delete task failed. Please try again later!',
+      });
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+  useEffect(() => {
+    getListTask();
+  }, []);
+
   return (
-    <div>
+    <>
+      {contextHolder}
       <Board
-        allowRemoveLane
-        allowRenameColumn
+        disableColumnDrag
         allowRemoveCard
-        onLaneRemove={console.log}
-        onCardRemove={console.log}
-        onLaneRename={console.log}
-        initialBoard={board}
-        allowAddCard={{ on: "top" }}
-        onNewCardConfirm={(draftCard) => ({
-          id: new Date().getTime(),
-          ...draftCard,
-        })}
-        onCardNew={console.log}
-      />
-    </div>
+        onCardDragEnd={handleCardDragEnd}
+        onCardRemove={onRemoveTask}
+      >
+        {board}
+      </Board>
+    </>
   );
 }
