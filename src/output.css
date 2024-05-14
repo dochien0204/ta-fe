@@ -650,10 +650,6 @@ video {
   margin-top: auto;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .flex {
   display: flex;
 }
@@ -696,8 +692,8 @@ video {
   flex-wrap: wrap;
 }
 
-.gap-\[25px\] {
-  gap: 25px;
+.gap-1 {
+  gap: 0.25rem;
 }
 
 .rounded-md {
@@ -715,10 +711,6 @@ video {
 
 .p-0 {
   padding: 0px;
-}
-
-.p-\[15px\] {
-  padding: 15px;
 }
 
 .p-\[10px\] {
@@ -785,12 +777,12 @@ video {
   text-align: center;
 }
 
-.text-\[20px\] {
-  font-size: 20px;
-}
-
 .text-\[16px\] {
   font-size: 16px;
+}
+
+.text-\[20px\] {
+  font-size: 20px;
 }
 
 .font-bold {

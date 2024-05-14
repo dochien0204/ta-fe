@@ -36,12 +36,17 @@ export default function Nav() {
 
     React.useEffect(() => {
         const pathname = window.location.pathname;
+        console.log(pathname)
         switch (pathname) {
             case "/projects":
                 setActiveLink("2");
                 break;
             case "/members":
                 setActiveLink("3");
+                break;
+            case "/app-project-list":
+                setActiveLink(10);
+                break;
             default:
                 break;
         }
@@ -119,6 +124,16 @@ export default function Nav() {
                     <Link className="nav-link" to={"/members"}>
                         <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
                         <span className="menu-title">Members</span>
+                    </Link>
+                </li>
+                <li
+                    className={`${activeLink === 10 ? "active" : ""} nav-item`}
+                    key={Math.random()}
+                    onClick={() => activeNav(10)}
+                >
+                    <Link className="nav-link" to={"/app-project-list"}>
+                        <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
+                        <span className="menu-title">Quản lý dự án</span>
                     </Link>
                 </li>
             </ul>

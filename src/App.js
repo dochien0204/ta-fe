@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Projects from './components/Projects';
 import Members from './components/Members';
+import ProjectManagementList from './components/project-management';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='' element={<Dashboard />} />
         <Route path='projects' element={<Projects />} />
         <Route path='members' element={<Members />} />
+        <Route path='app-project-list' element={<ProjectManagementList />} />
       </Route>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
