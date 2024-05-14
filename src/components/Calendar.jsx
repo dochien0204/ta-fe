@@ -171,10 +171,10 @@ const CalendarBoard = () => {
         <div className='text-[20px] font-bold p-[10px]'>
           {selectedDate.format('MMMM D, YYYY')}
         </div>
-        <Divider style={{ margin: 0 }} />
         <div className='p-[10px]'>
           <List
             bordered
+            className='h-[600px] overflow-y-auto'
             dataSource={currentTask?.listTask || []}
             renderItem={(item) => (
               <List.Item

@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.2.1",
     "antd": "^5.16.4",
     "axios": "^1.6.8",
+    "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "dayjs": "1.11.10",
     "react": "^18.2.0",

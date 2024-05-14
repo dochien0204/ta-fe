@@ -1,296 +1,294 @@
 .task-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .task-wrapper .task-wrapper__list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    background-color: #fff;
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #fff;
+  border-radius: 8px;
 
-    width: 500px;
-    padding: 16px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 500px;
+  padding: 16px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-    overflow: auto;
-    max-height: 670px;
+  overflow: auto;
+  max-height: 670px;
 }
 
 .task-wrapper__list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .task-wrapper__list-header .title {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .task-wrapper__list-items {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    cursor: pointer;
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 .task-wrapper__list-item {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    background-color: #eee;
-    padding: 12px;
-    border-radius: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background-color: #eee;
+  padding: 12px;
+  border-radius: 8px;
 }
 
 .task-wrapper__list-item .description {
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .task-wrapper__detail {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-    width: 100%;
-    padding: 16px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 100%;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .task-wrapper__detail-top {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .task-wrapper__detail-top .title {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .task-wrapper__detail-top .description {
-    display: flex;
-    gap: 24px;
+  display: flex;
+  gap: 24px;
 }
 
 .task-wrapper__detail-middle {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .task-wrapper__detail-middle .title {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .task-wrapper__detail-middle .file {
-    display: flex;
-    gap: 16px;
+  display: flex;
+  gap: 16px;
 }
 
 .task-wrapper__detail-middle .file .file-wrapper {
-    display: flex;
-    gap: 8px;
+  display: flex;
+  gap: 8px;
 }
 
 .task-wrapper__detail-middle .file .file-wrapper .icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background-color: pink;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: pink;
 }
 
 .task-wrapper__detail-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .task-wrapper__detail-bottom .title {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .task-wrapper__detail-bottom .comment {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .task-wrapper__detail-bottom .comment .comment__input {
-    display: flex;
-    gap: 6px;
+  display: flex;
+  gap: 6px;
 }
 
 .comment__input .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: pink;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: pink;
 }
 
 .comment__list {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    width: 100%;
-    max-height: 114px;
-    overflow: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  max-height: 114px;
+  overflow: auto;
 }
 
 .comment__list .comment__item {
-    background-color: aliceblue;
-    width: 384px;
-    height: 70px;
-    padding: 16px;
-    border-radius: 8px;
+  background-color: aliceblue;
+  width: 384px;
+  height: 70px;
+  padding: 16px;
+  border-radius: 8px;
 }
 
 .member__item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: start;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 .member__item-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: pink;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: pink;
 }
 
 .member-wrapper__elements {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #efefef;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #efefef;
 }
 
 .member-wrapper__list-items {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-    width: 100%;
-    border-radius: 8px;
+  width: 100%;
+  border-radius: 8px;
 }
 
 .member__group {
-    display: flex;
-    gap: 6px;
+  display: flex;
+  gap: 6px;
 }
 
 .member__tasks {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
 }
 
 .member__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .member__header-left {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }
 
 .member__header-avatar {
-    width: 80px;
-    height: 80px;
-    background-color: pink;
-    border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  background-color: pink;
+  border-radius: 50%;
 }
 
 .member__header-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 .member__header-info .member__header-name {
-    font-weight: bold;
-    font-size: 24px;
+  font-weight: bold;
+  font-size: 24px;
 }
 
 .member__wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .member__task {
-    display: flex;
-    gap: 36px;
+  display: flex;
+  gap: 36px;
 }
 
 .member__task-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .member__assigned {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .member__assigned-title {
-    font-size: 24px;
-    font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .member__assigned-task {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .member__assigned-item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 450px;
-    padding: 8px;
-    border-radius: 8px;
-    background: #efefef;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 450px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #efefef;
 }
 
 .activity-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .activity-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
 }
 
 .activity-title {
-    font-size: 24px;
-    font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 }
