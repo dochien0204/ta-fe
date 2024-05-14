@@ -85,3 +85,7 @@
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
   display: none;
 }
+
+.fixed-top {
+  z-index: 1000;
+}
