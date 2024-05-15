@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react';
-import { UpCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined } from '@ant-design/icons';
 import {
-  Avatar,
   Button,
   Divider,
+  Input,
   List,
-  Skeleton,
+  Select,
+  Space,
   Spin,
   Tag,
   Timeline,
   message,
 } from 'antd';
+import clsx from 'clsx';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../api';
+import { setLoading } from '../slices/common';
 import AvatarImage from './AvatarImage';
-import clsx from 'clsx';
+
+const { Search } = Input;
 
 const Members = () => {
   const [searchParams] = useSearchParams();
@@ -25,7 +30,13 @@ const Members = () => {
   const [isLoadMore, setLoadMore] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState(null);
   const [allowLoadMore, setAllowLoadMore] = React.useState(true);
-  const [pagination, setPagination] = React.useState({ page: 1, pageSize: 3 });
+  const [pagination, setPagination] = React.useState({ page: 1, pageSize: 10 });
+  const [keyboard, setKeyboard] = React.useState('');
+  const [overView, setOverView] = React.useState({});
+  const [listStatus, setListStatus] = React.useState([]);
+  const [selectedStatus, setSelectedStatus] = React.useState(0);
+
+  const dispatch = useDispatch();
 
   const getListMembers = async (payload, isLoadMore = false) => {
     try {
@@ -36,6 +47,7 @@ const Members = () => {
         {
           params: {
             projectId,
+            keyword: keyboard,
             ...payload,
           },
         }
@@ -89,14 +101,72 @@ const Members = () => {
       </div>
     ) : null;
 
+  const onSearch = () => {
+    getListMembers({ page: 1, size: pagination.pageSize });
+  };
+
+  const getOverView = async (userId) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get('/api/project/member/overview', {
+        params: {
+          projectId,
+          userId,
+        },
+      });
+      setOverView(response.data.results);
+    } catch (error) {
+      console.log('🚀  error:', error);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const getTaskOfMember = async ({ userId, statusId }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get('/api/task/list/user-status', {
+        params: {
+          projectId,
+          userId,
+          statusId,
+        },
+      });
+      setOverView(response.data.results);
+    } catch (error) {
+      console.log('🚀  error:', error);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const onSelectMember = async (member) => {
+    await getOverView(member.user.id);
+
+    setSelectedMember(member);
+  };
+
+  const getListStatus = async () => {
+    try {
+      const response = await axiosInstance.get(
+        '/api/master-data/status?type=task'
+      );
+      setListStatus(response.data.results);
+    } catch (error) {
+      console.log('🚀  error:', error);
+    }
+  };
+
+  const onChangeStatus = (value) => {};
+
   useEffect(() => {
+    getListStatus();
     getListMembers({ page: pagination.page, size: pagination.pageSize });
   }, []);
 
   return (
     <>
       {contextHolder}
-      <Spin spinning={isLoading} fullscreen />
       <div className='task-wrapper'>
         <div className='task-wrapper__list'>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -105,6 +175,15 @@ const Members = () => {
             </div>
             <div className='member-wrapper__list-items'>
               <List
+                header={
+                  <Search
+                    placeholder='Search members...'
+                    onSearch={onSearch}
+                    enterButton
+                    value={keyboard}
+                    onChange={(e) => setKeyboard(e.target.value)}
+                  />
+                }
                 loadMore={loadMore}
                 loading={isLoading}
                 dataSource={members}
@@ -119,7 +198,7 @@ const Members = () => {
                         }
                       )}
                       key={item.user.id}
-                      onClick={() => setSelectedMember(item)}
+                      onClick={() => onSelectMember(item)}
                     >
                       <div className='member__group flex-1 truncate'>
                         <div className='member__item-avatar flex-shrink-0 overflow-hidden'>
@@ -173,17 +252,33 @@ const Members = () => {
               </div>
               <div className='member__task'>
                 <div className='member__task-item'>
-                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>723</div>
+                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>
+                    {overView?.taskClosedCount}
+                  </div>
                   <div style={{ fontWeight: 'bold' }}>CLOSED TASKS</div>
                 </div>
                 <div className='member__task-item'>
-                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>723</div>
+                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>
+                    {overView?.taskOpenCount}
+                  </div>
                   <div style={{ fontWeight: 'bold' }}>OPEN TASKS</div>
                 </div>
               </div>
               <Divider />
               <div className='member__assigned'>
                 <div className='member__assigned-title'>Assigned Tasks</div>
+                <Select
+                  value={selectedStatus}
+                  style={{ width: 120 }}
+                  onChange={onChangeStatus}
+                  options={[
+                    { value: 0, label: 'Tất cả' },
+                    ...listStatus.map((status) => ({
+                      value: status.id,
+                      label: status.name,
+                    })),
+                  ]}
+                />
                 <div className='member__assigned-task'>
                   <div className='member__assigned-item'>
                     <div style={{ fontWeight: 'bold' }}>
