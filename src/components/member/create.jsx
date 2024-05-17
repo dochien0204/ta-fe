@@ -7,7 +7,7 @@ import { setLoading } from '../../slices/common';
 
 const { Item } = Form;
 
-const CreateProject = ({
+const CreateMember = ({
   createOpen = false,
   detail = null,
   setCreateOpen = () => {},
@@ -185,4 +185,4 @@ const CreateProject = ({
   );
 };
 
-export default CreateProject;
+export default CreateMember;

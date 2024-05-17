@@ -47,6 +47,9 @@ export default function Nav() {
             case "/app-project-list":
                 setActiveLink(10);
                 break;
+                case "/app-member-list":
+                setActiveLink(11);
+                break;
             default:
                 break;
         }
@@ -134,6 +137,16 @@ export default function Nav() {
                     <Link className="nav-link" to={"/app-project-list"}>
                         <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
                         <span className="menu-title">Quản lý dự án</span>
+                    </Link>
+                </li>
+                <li
+                    className={`${activeLink === 11 ? "active" : ""} nav-item`}
+                    key={Math.random()}
+                    onClick={() => activeNav(11)}
+                >
+                    <Link className="nav-link" to={"/app-member-list"}>
+                        <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
+                        <span className="menu-title">Quản lý member</span>
                     </Link>
                 </li>
             </ul>

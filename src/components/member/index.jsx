@@ -9,11 +9,11 @@ import { App, Button, Form, Input, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { axiosInstance } from '../../api';
-import CreateProject from './create';
+import CreateMember from './create';
 import { setLoading } from '../../slices/common';
 import dayjs from 'dayjs';
 
-const ProjectManagementList = () => {
+const MemberList = () => {
   const { notification, modal } = App.useApp();
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -31,7 +31,7 @@ const ProjectManagementList = () => {
     (async () => {
       try {
         dispatch(setLoading(true));
-        const response = await axiosInstance.get('/api/project/list/admin', {
+        const response = await axiosInstance.get('/api/user/list', {
           params: {
             page: pagination.current,
             size: pagination.pageSize,
@@ -56,22 +56,22 @@ const ProjectManagementList = () => {
   const onDelete = (item) => {
     return () => {
       modal.confirm({
-        title: 'Xóa dự án',
+        title: 'Xóa người dùng',
         icon: <ExclamationCircleFilled />,
-        content: 'Bạn có chắc chắn muốn xóa dự án?',
+        content: 'Bạn có chắc chắn muốn xóa người dùng?',
         okText: 'Xác nhận',
         okType: 'danger',
         cancelText: 'Hủy',
         async onOk() {
           try {
             dispatch(setLoading(true));
-            await axiosInstance.delete('/api/project/delete', {
+            await axiosInstance.delete('/api/user/delete', {
               data: {
-                listProjectId: [item.id],
+                listUserId: [item.id],
               },
             });
             notification.success({
-              description: 'Bạn xóa dự án thành công!'
+              description: 'Bạn xóa người dùng thành công!'
             });
             setRefresh((current) => !current);
           } catch (error) {
@@ -89,14 +89,9 @@ const ProjectManagementList = () => {
   const handleMapDataTable = (data, pagination) => {
     if (!data) return [];
     return data.map((item, index) => ({
+      ...item,
       key: item.id,
-      id: item.id,
       stt: index + 1 + (pagination.current - 1) * pagination.pageSize,
-      name: item.name,
-      description: item.description,
-      user: item.user?.username,
-      createdAt: dayjs(item.createdAt).format('DD/MM/YYYY'),
-      status: item.status,
     }));
   };
 
@@ -121,32 +116,22 @@ const ProjectManagementList = () => {
     {
       key: 'name',
       dataIndex: 'name',
-      title: 'Tên dự án',
+      title: 'Tên Member',
     },
     {
-      key: 'description',
-      dataIndex: 'description',
-      title: 'Mô tả dự án',
+      key: 'username',
+      dataIndex: 'username',
+      title: 'Username',
     },
     {
-      key: 'user',
-      title: 'Người tạo',
-      dataIndex: 'user',
+      key: 'phoneNumber',
+      title: 'Số điện thoại',
+      dataIndex: 'phoneNumber',
     },
     {
-      key: 'createdAt',
-      dataIndex: 'createdAt',
-      title: 'Ngày tạo',
-    },
-    {
-      key: 'status',
-      title: 'Trạng thái',
-      render(row) {
-        if (row.status.code === 'active') {
-          return <div className='text-green-500 font-medium'>Hoạt động</div>;
-        }
-        return <div className='text-red-500 font-medium'>Không hoạt động</div>;
-      },
+      key: 'email',
+      dataIndex: 'email',
+      title: 'Email',
     },
     {
       key: 'action',
@@ -181,11 +166,10 @@ const ProjectManagementList = () => {
   const triggerCreate = () => {
     setRefresh((current) => !current);
   };
-
   return (
     <div>
       <div className='uppercase font-semibold text-xl mb-2'>
-        Danh sách dự án
+        Danh sách người dùng
       </div>
       <div className='flex justify-between mb-4 items-center'>
         <div className='w-2/3'>
@@ -194,7 +178,7 @@ const ProjectManagementList = () => {
               <Input
                 size='large'
                 prefix={<SearchOutlined />}
-                placeholder='Tìm kiếm dự án'
+                placeholder='Tìm kiếm người dùng'
                 onChange={onSearch}
               />
             </Form.Item>
@@ -221,7 +205,7 @@ const ProjectManagementList = () => {
           },
         }}
       />
-      <CreateProject
+      <CreateMember
         createOpen={createOpen}
         detail={detail}
         triggerCreate={triggerCreate}
@@ -231,4 +215,4 @@ const ProjectManagementList = () => {
   );
 };
 
-export default ProjectManagementList;
+export default MemberList;
