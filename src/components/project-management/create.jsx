@@ -110,7 +110,7 @@ const CreateProject = ({
     <Modal
       centered
       open={createOpen}
-      title='Tạo dự án'
+      title={detail ? 'Cập nhật dự án' : 'Tạo dự án'}
       footer={null}
       width={'40%'}
       onCancel={onCancel}

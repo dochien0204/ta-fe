@@ -71,7 +71,7 @@ const MemberList = () => {
               },
             });
             notification.success({
-              description: 'Bạn xóa người dùng thành công!'
+              description: 'Bạn xóa người dùng thành công!',
             });
             setRefresh((current) => !current);
           } catch (error) {
@@ -93,6 +93,36 @@ const MemberList = () => {
       key: item.id,
       stt: index + 1 + (pagination.current - 1) * pagination.pageSize,
     }));
+  };
+
+  const handleResetPassword = (item) => {
+    return () => {
+      modal.confirm({
+        title: 'Reset password',
+        icon: <ExclamationCircleFilled />,
+        content: 'Bạn có chắc chắn muốn reset password?',
+        okText: 'Xác nhận',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        async onOk() {
+          try {
+            dispatch(setLoading(true));
+            await axiosInstance.post('/api/user/reset-password', {
+              userId: item.id,
+            });
+            notification.success({
+              description: 'Bạn reset thành công!',
+            });
+          } catch (error) {
+            notification.error({
+              description: error.message ?? 'Có lỗi xảy ra!',
+            });
+          } finally {
+            dispatch(setLoading(false));
+          }
+        },
+      });
+    };
   };
 
   const onUpdate = (row) => {
@@ -135,6 +165,7 @@ const MemberList = () => {
     },
     {
       key: 'action',
+      width: 300,
       render(row) {
         return (
           <div className='flex gap-3'>
@@ -147,6 +178,12 @@ const MemberList = () => {
               onClick={onDelete(row)}
             >
               <DeleteOutlined />
+            </Button>
+            <Button
+              className='flex items-center'
+              onClick={handleResetPassword(row)}
+            >
+              Reset password
             </Button>
           </div>
         );
