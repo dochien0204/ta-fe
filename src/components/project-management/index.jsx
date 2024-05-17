@@ -4,6 +4,7 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
   SearchOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { App, Button, Form, Input, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ import { axiosInstance } from '../../api';
 import CreateProject from './create';
 import { setLoading } from '../../slices/common';
 import dayjs from 'dayjs';
+import AddMemberProject from './member';
 
 const ProjectManagementList = () => {
   const { notification, modal } = App.useApp();
@@ -26,6 +28,8 @@ const ProjectManagementList = () => {
   const [createOpen, setCreateOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [detail, setDetail] = useState(null);
+
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -71,7 +75,7 @@ const ProjectManagementList = () => {
               },
             });
             notification.success({
-              description: 'Bạn xóa dự án thành công!'
+              description: 'Bạn xóa dự án thành công!',
             });
             setRefresh((current) => !current);
           } catch (error) {
@@ -110,6 +114,13 @@ const ProjectManagementList = () => {
   const onAdd = () => {
     setCreateOpen(true);
     setDetail(null);
+  };
+
+  const onAddMember = (row) => {
+    return () => {
+      setAddMemberOpen(true);
+      setDetail(row);
+    };
   };
 
   const column = [
@@ -153,6 +164,9 @@ const ProjectManagementList = () => {
       render(row) {
         return (
           <div className='flex gap-3'>
+            <Button className='flex items-center' onClick={onAddMember(row)}>
+              <UsergroupAddOutlined />
+            </Button>
             <Button className='flex items-center' onClick={onUpdate(row)}>
               <EditOutlined />
             </Button>
@@ -226,6 +240,11 @@ const ProjectManagementList = () => {
         detail={detail}
         triggerCreate={triggerCreate}
         setCreateOpen={setCreateOpen}
+      />
+      <AddMemberProject
+        addMemberOpen={addMemberOpen}
+        detail={detail}
+        setAddMember={setAddMemberOpen}
       />
     </div>
   );
