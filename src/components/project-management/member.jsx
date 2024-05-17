@@ -5,38 +5,12 @@ import { axiosInstance } from '../../api';
 
 const { Item } = Form;
 
-const ItemAddMember = ({ users, roles, onDelete }) => {
-  const [form] = Form.useForm();
-  return (
-    <Form form={form} name={Math.random()}>
-      <div className='flex gap-4 items-start'>
-        <Item className='flex-1' name='member'>
-          <Select options={users} size='large' placeholder='Chọn member' />
-        </Item>
-        <Item className='flex-1' name='role'>
-          <Select options={roles} size='large' placeholder='Chọn quyền' />
-        </Item>
-        <div className='flex gap-2 items-start'>
-          <Button size='large' htmlType='submit' type='primary'>
-            Lưu
-          </Button>
-          <Button size='large' htmlType='button'>
-            Hủy
-          </Button>
-          <Button size='large' htmlType='button' danger onClick={onDelete}>
-            Xóa
-          </Button>
-        </div>
-      </div>
-    </Form>
-  );
-};
-
 const AddMemberProject = ({
   addMemberOpen = false,
   detail = null,
   setAddMember = () => {},
 }) => {
+  const [form] = Form.useForm();
   const { notification, modal } = App.useApp();
   const [users, setUsers] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
@@ -133,24 +107,67 @@ const AddMemberProject = ({
       }}
     >
       <div className='flex flex-col min-h-[40vh]'>
-        {members.map((item) => (
-          <ItemAddMember
-            key={item.key}
-            {...item}
-            users={users}
-            roles={roles}
-            onDelete={onDelete(item)}
-          />
-        ))}
-        <Button
-          className='flex items-center w-fit mt-4'
-          size='large'
-          type='primary'
-          htmlType='button'
-          onClick={onAddMember}
-        >
-          <UserAddOutlined /> Add member
-        </Button>
+        <Form name='form-add-member' form={form}>
+          {members.map((item) => (
+            <div className='flex gap-4 items-start' key={item.key}>
+              <Item
+                className='flex-1'
+                name='member'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Cần chọn member',
+                  },
+                ]}
+              >
+                <Select
+                  options={users}
+                  size='large'
+                  placeholder='Chọn member'
+                />
+              </Item>
+              <Item
+                className='flex-1'
+                name='role'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Cần chọn quyền',
+                  },
+                ]}
+              >
+                <Select options={roles} size='large' placeholder='Chọn quyền' />
+              </Item>
+              <Button
+                size='large'
+                htmlType='button'
+                danger
+                onClick={onDelete(item)}
+              >
+                Xóa
+              </Button>
+            </div>
+          ))}
+          <div className='flex gap-2 items-center justify-between'>
+            <Button
+              className='flex items-center mt-4 w-[120px] justify-center'
+              size='large'
+              type='primary'
+              htmlType='submit'
+            >
+              Lưu
+            </Button>
+            <Button
+              className='flex items-center w-fit mt-4'
+              size='large'
+              type='primary'
+              htmlType='button'
+              onClick={onAddMember}
+            >
+              <UserAddOutlined /> Add member
+            </Button>
+          </div>
+        </Form>
       </div>
     </Modal>
   );
