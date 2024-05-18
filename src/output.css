@@ -610,6 +610,10 @@ video {
   margin-bottom: 1.25rem;
 }
 
+.mb-\[20px\] {
+  margin-bottom: 20px;
+}
+
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -650,20 +654,16 @@ video {
   margin-top: auto;
 }
 
-.mb-\[20px\] {
-  margin-bottom: 20px;
-}
-
-.block {
-  display: block;
-}
-
 .flex {
   display: flex;
 }
 
 .table {
   display: table;
+}
+
+.contents {
+  display: contents;
 }
 
 .hidden {

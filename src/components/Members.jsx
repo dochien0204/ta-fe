@@ -229,8 +229,9 @@ const Members = () => {
             </div>
           </div>
         </div>
-        <div className='task-wrapper__detail'>
+        <div className='task-wrapper__detail flex flex-row'>
           {selectedMember && (
+            <>
             <div className='member__wrapper'>
               <div className='member__header'>
                 <div className='member__header-left items-center'>
@@ -306,8 +307,10 @@ const Members = () => {
                   </div>
                 </div>
               </div>
-              <Divider />
-              <div className='member__assigned'>
+              
+            </div>
+            <div className='member__wrapper'>
+            <div className='member__assigned'>
                 <div className='member__assigned-title'>Last Activity</div>
                 <Timeline
                   mode='alternate'
@@ -338,6 +341,7 @@ const Members = () => {
                 />
               </div>
             </div>
+            </>
           )}
         </div>
       </div>
