@@ -4,6 +4,7 @@ import TableTask from './home/table-task';
 import { useDispatch } from 'react-redux';
 import { axiosInstance } from '../api';
 import { App } from 'antd';
+import { setLoading } from '../slices/common';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ export default function Dashboard() {
   React.useEffect(() => {
     (async () => {
       try {
+        dispatch(setLoading(true));
         const response = await axiosInstance.get('/api/project/chart/overview');
         const resultsTable = [];
         const resultsChart = [];
@@ -36,6 +38,8 @@ export default function Dashboard() {
         notification.error({
           description: error.message ?? 'Có lỗi xảy ra!',
         });
+      } finally {
+        dispatch(setLoading(false));
       }
     })();
   }, []);
