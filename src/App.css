@@ -85,3 +85,37 @@
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
   display: none;
 }
+
+.react-kanban-board {
+  height: 670px;
+  overflow-y: auto;
+}
+.react-kanban-board > * {
+  height: 100%;
+  display: flex;
+  gap: 25px;
+}
+
+.react-kanban-column {
+  height: 100%;
+}
+
+.react-kanban-column {
+  display: flex !important;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+.react-kanban-column-header {
+  padding: 15px;
+}
+
+.react-kanban-column > div:last-child {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+}

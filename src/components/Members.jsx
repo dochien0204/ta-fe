@@ -260,6 +260,8 @@ const Members = () => {
                     <div className='member__header-left items-center'>
                       <div className='member__header-avatar overflow-hidden'>
                         <AvatarImage
+                          key={selectedMember.user.id}
+                          userId={selectedMember.user.id}
                           src={selectedMember.user.avatar}
                           className='w-full h-full'
                         />
