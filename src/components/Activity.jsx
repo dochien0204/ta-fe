@@ -42,16 +42,19 @@ const Activity = () => {
       return {
         children: (
           <Flex gap='middle' vertical>
-            <Flex gap="middle" align='center'>
+            <Flex gap='middle' align='center'>
               <AvatarImage
                 width={40}
                 height={40}
+                userId={timeLine?.user?.id}
                 style={{ borderRadius: '50%', objectFit: 'cover' }}
                 src={timeLine?.user?.avatar}
               />
               <span>{timeLine?.user?.name}</span>
             </Flex>
-            <div style={{fontSize: "16px" , fontWeight: 600}}>{timeLine.description}</div>
+            <div style={{ fontSize: '16px', fontWeight: 600 }}>
+              {timeLine.description}
+            </div>
           </Flex>
         ),
       };
@@ -65,12 +68,10 @@ const Activity = () => {
     <div className='activity-wrapper'>
       {listActivities.map((activity) => (
         <div className='activity-item' key={activity.date}>
-          <div className='activity-title'>
+          <div className='activity-title mb-[20px]'>
             {convertDateToRelative(activity.date)}
           </div>
-          <Timeline
-            items={mappingTimeLine(activity.listActivity)}
-          />
+          <Timeline items={mappingTimeLine(activity.listActivity)} />
         </div>
       ))}
     </div>
