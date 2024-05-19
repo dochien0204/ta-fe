@@ -4,7 +4,7 @@
   gap: 10px;
 
   width: 100%;
-  height: auto;
+  height: 670px;
 }
 
 .task-wrapper .task-wrapper__list {
@@ -61,6 +61,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
 
   width: 100%;
   padding: 16px;
@@ -234,7 +235,9 @@
 .member__wrapper {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .member__task {
@@ -263,6 +266,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 450px;
+  overflow-y: auto;
 }
 
 .member__assigned-item {

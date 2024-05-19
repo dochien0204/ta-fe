@@ -1,13 +1,12 @@
-import { ClockCircleOutlined } from '@ant-design/icons';
 import {
   Button,
   Divider,
+  Empty,
+  Flex,
   Input,
   List,
   Select,
-  Space,
   Spin,
-  Tag,
   Timeline,
   message,
 } from 'antd';
@@ -18,6 +17,7 @@ import { useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '../api';
 import { setLoading } from '../slices/common';
 import AvatarImage from './AvatarImage';
+import ListTaskOfUser from './ListTaskOfUser';
 
 const { Search } = Input;
 
@@ -35,6 +35,7 @@ const Members = () => {
   const [overView, setOverView] = React.useState({});
   const [listStatus, setListStatus] = React.useState([]);
   const [selectedStatus, setSelectedStatus] = React.useState(0);
+  const [listActivities, setListActivities] = React.useState([]);
 
   const dispatch = useDispatch();
 
@@ -64,6 +65,10 @@ const Members = () => {
         ...prev,
         page: response.data?.pagination.page,
       }));
+
+      if (!selectedMember) {
+        setSelectedMember(newMembers[0]);
+      }
     } catch (error) {
       messageApi.open({
         type: 'error',
@@ -122,28 +127,28 @@ const Members = () => {
     }
   };
 
-  const getTaskOfMember = async ({ userId, statusId }) => {
+  const onSelectMember = async (member) => {
+    await getOverView(member.user.id);
+    await getActivities(member.user.id);
+
+    setSelectedMember(member);
+  };
+
+  const getActivities = async (userId) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get('/api/task/list/user-status', {
+      const response = await axiosInstance.get('/api/project/activity/user', {
         params: {
           projectId,
           userId,
-          statusId,
         },
       });
-      setOverView(response.data.results);
+      setListActivities(response.data.results);
     } catch (error) {
       console.log('🚀  error:', error);
     } finally {
       dispatch(setLoading(false));
     }
-  };
-
-  const onSelectMember = async (member) => {
-    await getOverView(member.user.id);
-
-    setSelectedMember(member);
   };
 
   const getListStatus = async () => {
@@ -157,7 +162,23 @@ const Members = () => {
     }
   };
 
-  const onChangeStatus = (value) => {};
+  const mappingTimeLine = (timeLines, label) => {
+    return timeLines.map((timeLine, index) => {
+      return {
+        children: (
+          <Flex gap='middle' vertical>
+            <div style={{ fontSize: '16px' }}>{timeLine.description}</div>
+          </Flex>
+        ),
+        color: index % 2 === 0 ? 'green' : 'blue',
+        label,
+      };
+    });
+  };
+
+  const onChangeStatus = (value) => {
+    setSelectedStatus(value);
+  };
 
   useEffect(() => {
     getListStatus();
@@ -203,6 +224,7 @@ const Members = () => {
                       <div className='member__group flex-1 truncate'>
                         <div className='member__item-avatar flex-shrink-0 overflow-hidden'>
                           <AvatarImage
+                            userId={item.user.id}
                             src={item.user.avatar}
                             className='w-full h-full'
                           />
@@ -232,115 +254,90 @@ const Members = () => {
         <div className='task-wrapper__detail flex flex-row'>
           {selectedMember && (
             <>
-            <div className='member__wrapper'>
-              <div className='member__header'>
-                <div className='member__header-left items-center'>
-                  <div className='member__header-avatar overflow-hidden'>
-                    <AvatarImage
-                      src={selectedMember.user.avatar}
-                      className='w-full h-full'
+              <div className='member__wrapper flex flex-col'>
+                <div>
+                  <div className='member__header'>
+                    <div className='member__header-left items-center'>
+                      <div className='member__header-avatar overflow-hidden'>
+                        <AvatarImage
+                          src={selectedMember.user.avatar}
+                          className='w-full h-full'
+                        />
+                      </div>
+                      <div className='member__header-info'>
+                        <div className='member__header-name'>
+                          {selectedMember.user.name}
+                        </div>
+                        <div className='member__header-address'>
+                          {selectedMember.user.email}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='member__task mt-[20px]'>
+                    <div className='member__task-item'>
+                      <div style={{ fontWeight: 'bold', fontSize: 24 }}>
+                        {overView?.taskClosedCount}
+                      </div>
+                      <div style={{ fontWeight: 'bold' }}>CLOSED TASKS</div>
+                    </div>
+                    <div className='member__task-item'>
+                      <div style={{ fontWeight: 'bold', fontSize: 24 }}>
+                        {overView?.taskOpenCount}
+                      </div>
+                      <div style={{ fontWeight: 'bold' }}>OPEN TASKS</div>
+                    </div>
+                  </div>
+                  <Divider />
+                </div>
+                <div className='member__assigned flex-1 flex flex-col overflow-y-auto overflow-x-hidden'>
+                  <div>
+                    <div className='member__assigned-title mb-2'>
+                      Assigned Tasks
+                    </div>
+                    <Select
+                      value={selectedStatus}
+                      style={{ width: 120 }}
+                      onChange={onChangeStatus}
+                      options={[
+                        { value: 0, label: 'Tất cả' },
+                        ...listStatus.map((status) => ({
+                          value: status.id,
+                          label: status.name,
+                        })),
+                      ]}
                     />
                   </div>
-                  <div className='member__header-info'>
-                    <div className='member__header-name'>
-                      {selectedMember.user.name}
-                    </div>
-                    <div className='member__header-address'>
-                      {selectedMember.user.email}
-                    </div>
+
+                  <div className='member__assigned-task flex-1'>
+                    <ListTaskOfUser
+                      projectId={projectId}
+                      statusId={selectedStatus}
+                      userId={selectedMember?.user?.id}
+                    />
                   </div>
                 </div>
               </div>
-              <div className='member__task'>
-                <div className='member__task-item'>
-                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>
-                    {overView?.taskClosedCount}
-                  </div>
-                  <div style={{ fontWeight: 'bold' }}>CLOSED TASKS</div>
-                </div>
-                <div className='member__task-item'>
-                  <div style={{ fontWeight: 'bold', fontSize: 24 }}>
-                    {overView?.taskOpenCount}
-                  </div>
-                  <div style={{ fontWeight: 'bold' }}>OPEN TASKS</div>
-                </div>
-              </div>
-              <Divider />
-              <div className='member__assigned'>
-                <div className='member__assigned-title'>Assigned Tasks</div>
-                <Select
-                  value={selectedStatus}
-                  style={{ width: 120 }}
-                  onChange={onChangeStatus}
-                  options={[
-                    { value: 0, label: 'Tất cả' },
-                    ...listStatus.map((status) => ({
-                      value: status.id,
-                      label: status.name,
-                    })),
-                  ]}
-                />
-                <div className='member__assigned-task'>
-                  <div className='member__assigned-item'>
-                    <div style={{ fontWeight: 'bold' }}>
-                      An option to search in current projects or in all projects
-                    </div>
-                    <Tag style={{ width: 50 }} color='green'>
-                      Design
-                    </Tag>
-                  </div>
-                  <div className='member__assigned-item'>
-                    <div style={{ fontWeight: 'bold' }}>
-                      An option to search in current projects or in all projects
-                    </div>
-                    <Tag style={{ width: 50 }} color='green'>
-                      Design
-                    </Tag>
-                  </div>
-                  <div className='member__assigned-item'>
-                    <div style={{ fontWeight: 'bold' }}>
-                      An option to search in current projects or in all projects
-                    </div>
-                    <Tag style={{ width: 50 }} color='green'>
-                      Design
-                    </Tag>
+              <div className='member__wrapper flex-1'>
+                <div className='member__assigned flex flex-col overflow-y-auto'>
+                  <div className='member__assigned-title'>Last Activity</div>
+                  <div className='flex-1 overflow-y-auto overflow-x-hidden'>
+                    {listActivities.length ? (
+                      listActivities.map((activity) => (
+                        <Timeline
+                          mode='alternate'
+                          items={mappingTimeLine(
+                            activity.listActivity,
+                            activity.date
+                          )}
+                        />
+                      ))
+                    ) : (
+                      <Empty />
+                    )}
                   </div>
                 </div>
               </div>
-              
-            </div>
-            <div className='member__wrapper'>
-            <div className='member__assigned'>
-                <div className='member__assigned-title'>Last Activity</div>
-                <Timeline
-                  mode='alternate'
-                  items={[
-                    {
-                      children: 'Create a services site 2015-09-01',
-                    },
-                    {
-                      children: 'Solve initial network problems 2015-09-01',
-                      color: 'green',
-                    },
-                    {
-                      dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
-                      children: `Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.`,
-                    },
-                    {
-                      color: 'red',
-                      children: 'Network problems being solved 2015-09-01',
-                    },
-                    {
-                      children: 'Create a services site 2015-09-01',
-                    },
-                    {
-                      dot: <ClockCircleOutlined style={{ fontSize: '16px' }} />,
-                      children: 'Technical testing 2015-09-01',
-                    },
-                  ]}
-                />
-              </div>
-            </div>
             </>
           )}
         </div>

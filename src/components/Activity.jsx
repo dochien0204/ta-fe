@@ -46,6 +46,7 @@ const Activity = () => {
               <AvatarImage
                 width={40}
                 height={40}
+                userId={timeLine?.user?.id}
                 style={{ borderRadius: '50%', objectFit: 'cover' }}
                 src={timeLine?.user?.avatar}
               />
