@@ -80,6 +80,7 @@ const AddMemberProject = ({
             results.push({
               key: item.user?.id,
               member: item.user?.id,
+              name: item.user?.name,
               role: item.user?.category?.id,
             });
             form.setFieldValue(item?.user?.id, {
@@ -196,7 +197,10 @@ const AddMemberProject = ({
                 ]}
               >
                 <Select
-                  options={optionsMember}
+                  options={[
+                    { value: item.member, label: item.name },
+                    ...optionsMember,
+                  ]}
                   size='large'
                   placeholder='Chọn member'
                 />
