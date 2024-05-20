@@ -119,3 +119,9 @@
 *::-webkit-scrollbar {
   width: 4px;
 }
+
+.hide-border-outline .ant-select-selector {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

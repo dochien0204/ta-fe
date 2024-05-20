@@ -4,12 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../api';
 import { setLoading } from '../slices/common';
-
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
+import { EditOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 export default function NavRight() {
   const navigate = useNavigate();
@@ -19,29 +15,22 @@ export default function NavRight() {
   };
 
   const [messageApi, contextHolder] = message.useMessage();
+  const [form] = Form.useForm();
+  const userId = localStorage.getItem('userId');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalUpdatePassword, setIsModalUpdatePassword] = useState(false);
 
-  const [imageUrl, setImageUrl] = useState();
-
-  const handlePreview = async (file) => {
-    debugger;
-    if (!file.url && !file.preview) {
-      file.preview = getBase64(file.originFileObj, (url) => {
-        setImageUrl(url);
-      });
-    }
-  };
-
   const [userProfile, setUserProfile] = useState();
+  const [avatarFileUpload, setAvatarFileUpload] = useState(null);
+
   const dispatch = useDispatch();
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
+    form.submit();
   };
 
   const handleCancel = () => {
@@ -49,8 +38,6 @@ export default function NavRight() {
   };
 
   const getAvatarUser = (avatar) => {
-    const userId = localStorage.getItem('userId');
-
     return axiosInstance.get('/api/user/get-avatar', {
       params: {
         userId,
@@ -78,7 +65,6 @@ export default function NavRight() {
         ...response.data.result,
         avatarUrl: responseGetAvatar.data.results.url,
       });
-      setImageUrl(responseGetAvatar.data.results.url);
     } catch (error) {
       messageApi.open({
         type: 'error',
@@ -86,6 +72,87 @@ export default function NavRight() {
       });
     } finally {
       dispatch(setLoading(false));
+    }
+  };
+
+  const uploadImage = async (e) => {
+    const userId = localStorage.getItem('userId');
+
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(
+        '/api/user/avatar/presign-link',
+        {
+          params: {
+            keyName: `user/${userId}/${file.name}`,
+          },
+        }
+      );
+
+      const urlUpload = response.data.results;
+
+      await axios.put(urlUpload, file, {
+        headers: {
+          'Content-Type': file.type,
+          'Content-Disposition': `attachment; filename=${file.name}`,
+        },
+      });
+
+      await axiosInstance.put('/api/user/update-avatar', {
+        avatar: file.name,
+      });
+    } catch (error) {
+      console.log('🚀  error:', error);
+      messageApi.open({
+        type: 'error',
+        content: 'Upload avatar failed. Please try again later!',
+      });
+    }
+    setAvatarFileUpload(file);
+  };
+
+  const previewImage = (file) => {
+    if (!file) return '';
+    return URL.createObjectURL(file);
+  };
+
+  const onFinish = async (values) => {
+    delete values.username;
+    try {
+      await axiosInstance.put('/api/user/update', {
+        id: +userId,
+        ...values,
+      });
+
+      messageApi.open({
+        type: 'success',
+        content: 'Update user information success!',
+      });
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: 'Update user information failed. Please try again later!',
+      });
+    }
+  };
+
+  const getPresignedLinkAvatar = async ({ userId, file }) => {
+    try {
+      const response = await axiosInstance.get(
+        '/api/user/avatar/presign-link',
+        {
+          keyName: `user/${userId}/${file.name}`,
+        }
+      );
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: 'Upload avatar failed. Please try again later!',
+      });
     }
   };
 
@@ -203,20 +270,31 @@ export default function NavRight() {
           ]}
         >
           <Flex gap={40} align='flex-start'>
-            {/* <div className='relative'>
+            <div className='relative'>
               <Image
                 width={120}
                 height={120}
                 preview={false}
-                src={userProfile?.avatarUrl}
+                src={
+                  avatarFileUpload
+                    ? previewImage(avatarFileUpload)
+                    : userProfile?.avatarUrl
+                }
                 className='rounded-full'
                 alt='avatar'
               />
-              <label className='absolute left-1/2 -translate-x-[50%] bottom-4 w-[25px] h-[25px] rounded-full bg-blue-500/90 flex items-center justify-center cursor-pointer'>
+              <label className='absolute left-1/2 -translate-x-[50%] bottom-2 w-[25px] h-[25px] rounded-full bg-blue-500/90 flex items-center justify-center cursor-pointer'>
+                <input
+                  type='file'
+                  className='hidden'
+                  hidden
+                  accept='image/*'
+                  onInput={uploadImage}
+                />
                 <EditOutlined size={20} style={{ color: 'white' }} />
               </label>
-            </div> */}
-            <Upload
+            </div>
+            {/* <Upload
               name='avatar'
               listType='picture-circle'
               className='avatar-uploader'
@@ -232,8 +310,10 @@ export default function NavRight() {
                 className='rounded-full'
                 alt='avatar'
               />
-            </Upload>
+            </Upload> */}
             <Form
+              form={form}
+              onFinish={onFinish}
               name='trigger'
               layout='vertical'
               autoComplete='off'
@@ -261,6 +341,13 @@ export default function NavRight() {
                 initialValue={userProfile?.email}
               >
                 <Input placeholder='Email' />
+              </Form.Item>
+              <Form.Item
+                label='Phone Number'
+                name='phoneNumber'
+                initialValue={userProfile?.phoneNumber}
+              >
+                <Input placeholder='Phone Number' />
               </Form.Item>
               <Form.Item
                 label='Address'

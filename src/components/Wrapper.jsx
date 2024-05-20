@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Outlet, useNavigate, useRoutes } from 'react-router-dom';
 import Nav from './Nav';
-import Footer from './Footer';
 import NavRight from './NavRight';
-import { Outlet } from 'react-router-dom';
 
-import LoadingIcon from '../assets/loading.gif';
+import { Select } from 'antd';
 import { useSelector } from 'react-redux';
+import { axiosInstance } from '../api';
+import LoadingIcon from '../assets/loading.gif';
+
+const debounce = function (fn, ms = 300) {
+  let timeoutId;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(context, args), ms);
+  };
+};
 
 export default function Wrapper() {
+  let navigate = useNavigate();
   const isLoading = useSelector((state) => state.common.isLoading);
+  const [listTask, setListTask] = useState([]);
+
+  const searchTask = async (keyword) => {
+    try {
+      const response = await axiosInstance.get('/api/task/search', {
+        params: {
+          keyword,
+        },
+      });
+      setListTask(response.data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -54,13 +79,25 @@ export default function Wrapper() {
                       <i className='icon-search'></i>
                     </span>
                   </div>
-                  <input
-                    type='text'
-                    className='form-control'
-                    id='navbar-search-input'
-                    placeholder='Search now'
-                    aria-label='search'
-                    aria-describedby='search'
+                  <Select
+                    showSearch
+                    className='hide-border-outline'
+                    size='large'
+                    style={{ width: 700, border: 'none' }}
+                    placeholder='Search to Select'
+                    options={listTask.map((task) => ({
+                      value: task.id,
+                      label: task.name,
+                      task,
+                    }))}
+                    filterOption={false}
+                    onSearch={debounce(searchTask, 300)}
+                    suffixIcon={null}
+                    onChange={(_, item) => {
+                      navigate(
+                        `/projects?projectId=${item.task.projectId}&taskId=${item.task.id}`
+                      );
+                    }}
                   />
                 </div>
               </li>
