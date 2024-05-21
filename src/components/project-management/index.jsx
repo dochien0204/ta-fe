@@ -6,7 +6,7 @@ import {
   SearchOutlined,
   UsergroupAddOutlined,
 } from '@ant-design/icons';
-import { App, Button, DatePicker, Form, Input, Table } from 'antd';
+import { App, Button, Form, Input, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { axiosInstance } from '../../api';
@@ -14,8 +14,6 @@ import CreateProject from './create';
 import { setLoading } from '../../slices/common';
 import dayjs from 'dayjs';
 import AddMemberProject from './member';
-import { ConfigProvider } from 'antd'
-import locale from 'antd/locale/vi_VN'
 import 'dayjs/locale/vi'
 dayjs.locale('vi')
 
@@ -218,7 +216,6 @@ const ProjectManagementList = () => {
               />
             </Form.Item>
           </Form>
-          <ConfigProvider locale={locale}><DatePicker  /></ConfigProvider>
           
         </div>
         <Button
