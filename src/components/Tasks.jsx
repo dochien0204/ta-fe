@@ -274,7 +274,7 @@ const Tasks = () => {
   return (
     <>
       <div className="task-wrapper">
-        <div className="task-wrapper__list">
+        <div className="task-wrapper__list-task">
           {tasks.map((item) => (
             <div
               style={{ display: "flex", flexDirection: "column", gap: 16 }}

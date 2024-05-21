@@ -4,10 +4,25 @@
   gap: 10px;
 
   width: 100%;
-  height: auto;
+  height: 800px;
 }
 
 .task-wrapper .task-wrapper__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+
+  width: 500px;
+  padding: 16px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  overflow: auto;
+  max-height: 100%;
+}
+
+.task-wrapper .task-wrapper__list-task {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -156,7 +171,7 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-height: 230px;
+  max-height: 155px;
   overflow: auto;
 }
 
