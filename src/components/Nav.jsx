@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Modal, Form, Input, Button } from "antd";
 import { axiosInstance } from "../api";
 
 export default function Nav() {
     const [form] = Form.useForm();
+    const [searchParams] = useSearchParams()
     const [activeLink, setActiveLink] = React.useState("1");
     const [projects, setProjects] = React.useState([]);
     const [isModalOpen, setModalOpen] = React.useState(false);
@@ -36,12 +37,21 @@ export default function Nav() {
 
     React.useEffect(() => {
         const pathname = window.location.pathname;
+
         switch (pathname) {
             case "/projects":
-                setActiveLink("2");
+                const projectId =  searchParams.get("projectId")
+                setActiveLink(+projectId ?? projects?.id);
                 break;
             case "/members":
                 setActiveLink("3");
+                break;
+            case "/app-project-list":
+                setActiveLink(10);
+                break;
+                case "/app-member-list":
+                setActiveLink(11);
+                break;
             default:
                 break;
         }
@@ -90,10 +100,10 @@ export default function Nav() {
                 <li style={{ paddingLeft: 16, paddingTop: 10, fontWeight: "bold" }}>
                     <span className="menu-title">PROJECTS</span>
                 </li>
-                <div style={{ overflowX: "hidden", overflowY: "scroll", maxHeight: 300 }}>
+                <div className="flex flex-col gap-1" style={{ overflowX: "hidden", overflowY: "scroll", maxHeight: 300 }}>
                     {projects.map((item, _) => (
                         <li
-                            className={`${activeLink === item.id ? "active" : ""} nav-item`}
+                            className={`${activeLink === item.id ? "active" : ""} nav-item hover:bg-[#4B49AC] rounded-lg`}
                             key={Math.random()}
                             onClick={() => activeNav(item.id)}
                         >
@@ -119,6 +129,26 @@ export default function Nav() {
                     <Link className="nav-link" to={"/members"}>
                         <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
                         <span className="menu-title">Members</span>
+                    </Link>
+                </li>
+                <li
+                    className={`${activeLink === 10 ? "active" : ""} nav-item`}
+                    key={Math.random()}
+                    onClick={() => activeNav(10)}
+                >
+                    <Link className="nav-link" to={"/app-project-list"}>
+                        <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
+                        <span className="menu-title">Quản lý dự án</span>
+                    </Link>
+                </li>
+                <li
+                    className={`${activeLink === 11 ? "active" : ""} nav-item`}
+                    key={Math.random()}
+                    onClick={() => activeNav(11)}
+                >
+                    <Link className="nav-link" to={"/app-member-list"}>
+                        <i className={`icon-paper menu-icon`} style={{ marginTop: "-6px" }}></i>
+                        <span className="menu-title">Quản lý member</span>
                     </Link>
                 </li>
             </ul>

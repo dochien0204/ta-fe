@@ -71,9 +71,9 @@
 }
 
 .spinner {
-  position: 'absolute' !important;
-  top: '50%' !important;
-  left: '50%' !important;
+  position: "absolute" !important;
+  top: "50%" !important;
+  left: "50%" !important;
   z-index: 999999999 !important;
 }
 
@@ -84,6 +84,10 @@
 
 .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
   display: none;
+}
+
+.fixed-top {
+  z-index: 1000;
 }
 
 .react-kanban-board {
