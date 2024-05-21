@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./App";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App as AppAnt } from "antd";
 import viVN from "antd/es/locale/vi_VN";
 import moment from "moment";
 import "moment/locale/vi";
@@ -16,9 +16,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ConfigProvider locale={viVN}>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AppAnt>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AppAnt>
     </Provider>
   </ConfigProvider>
 );
