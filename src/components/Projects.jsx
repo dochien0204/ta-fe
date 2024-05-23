@@ -5,13 +5,16 @@ import CalendarBoard from './Calendar';
 import KanbanBoard from './KanbanBoard';
 import Members from './Members';
 import Tasks from './Tasks';
+import { useState } from 'react';
 
 const Projects = () => {
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
+  const taskId = searchParams.get('taskId');
+  const [activeKey, setActiveKey] = useState();
 
   const onChange = (key) => {
-    console.log(key);
+    setActiveKey(key)
   };
 
   const itemsTab = [
@@ -44,7 +47,8 @@ const Projects = () => {
 
   return (
     <Tabs
-      key={projectId}
+      activeKey={activeKey}
+      key={projectId + activeKey + taskId}
       onChange={onChange}
       type='card'
       items={itemsTab.map((item, i) => {
