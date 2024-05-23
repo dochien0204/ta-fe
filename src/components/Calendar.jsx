@@ -1,87 +1,9 @@
-import {
-  Badge,
-  Calendar,
-  Divider,
-  Flex,
-  List,
-  Space,
-  Tag,
-  Typography,
-} from 'antd';
-import React, { useEffect, useState } from 'react';
-import { axiosInstance } from '../api';
-import { useSearchParams } from 'react-router-dom';
+import { Badge, Calendar, Flex, List, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { axiosInstance } from '../api';
 import { COLOR_BY_STATUS } from '../constants/status';
-
-const getListData = (value) => {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        {
-          type: 'warning',
-          content: 'This is warning event.',
-        },
-        {
-          type: 'success',
-          content: 'This is usual event.',
-        },
-      ];
-      break;
-    case 10:
-      listData = [
-        {
-          type: 'warning',
-          content: 'This is warning event.',
-        },
-        {
-          type: 'success',
-          content: 'This is usual event.',
-        },
-        {
-          type: 'error',
-          content: 'This is error event.',
-        },
-      ];
-      break;
-    case 15:
-      listData = [
-        {
-          type: 'warning',
-          content: 'This is warning event',
-        },
-        {
-          type: 'success',
-          content: 'This is very long usual event......',
-        },
-        {
-          type: 'error',
-          content: 'This is error event 1.',
-        },
-        {
-          type: 'error',
-          content: 'This is error event 2.',
-        },
-        {
-          type: 'error',
-          content: 'This is error event 3.',
-        },
-        {
-          type: 'error',
-          content: 'This is error event 4.',
-        },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-};
-const getMonthData = (value) => {
-  if (value.month() === 8) {
-    return 1394;
-  }
-};
 
 const CalendarBoard = () => {
   const [searchParams] = useSearchParams();
