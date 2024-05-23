@@ -1,14 +1,16 @@
-import { Button, Input, Form } from "antd";
+import { Button, Input, Form, message } from "antd";
 import { axiosInstance } from "../api";
 import { useDispatch } from "react-redux";
-import { setRefresh } from "../slices/common";
-import React from "react";
+import { setLoading, setRefresh } from "../slices/common";
+import React, { useEffect, useState } from "react";
 import { convertDateString } from "../utils";
+import AvatarImage from "./AvatarImage";
 
 const Discussion = ({ discussion, taskId, currentUserAvatar }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const avatarCurrentUser = localStorage.getItem("avatar");
+  const [userProfile, setUserProfile] = useState();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleCreateDiscussion = async (values) => {
     try {
@@ -26,6 +28,34 @@ const Discussion = ({ discussion, taskId, currentUserAvatar }) => {
     }
   };
 
+  const getUserProfile = async () => {
+    const userId = localStorage.getItem("userId");
+    try {
+      dispatch(setLoading(true));
+
+      const response = await axiosInstance.get("/api/user/profile", {
+        params: {
+          userId,
+        },
+      });
+
+      setUserProfile({
+        ...response.data.result,
+      });
+    } catch (error) {
+      messageApi.open({
+        type: "error",
+        content: "Get user profile failed. Please try again later!",
+      });
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
   return (
     <Form form={form} onFinish={handleCreateDiscussion}>
       <div className="task-wrapper__detail-bottom">
@@ -33,7 +63,7 @@ const Discussion = ({ discussion, taskId, currentUserAvatar }) => {
         <div className="comment">
           <div className="comment__input" style={{ alignItems: "center" }}>
             <div className="avatar" style={{ width: "50", height: "50" }}>
-              <img
+              {/* <img
                 style={{
                   width: "100%",
                   height: "100%",
@@ -41,6 +71,11 @@ const Discussion = ({ discussion, taskId, currentUserAvatar }) => {
                 }}
                 src={currentUserAvatar}
                 alt=""
+              /> */}
+              <AvatarImage
+                userId={userProfile?.id}
+                src={userProfile?.avatar}
+                className="w-full h-full rounded-full"
               />
             </div>
             <Form.Item
