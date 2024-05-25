@@ -120,7 +120,7 @@ const Tasks = () => {
         const files = await Promise.all(fetchPromises);
         data.files = files;
         setItemDetail(data);
-        searchParams.set("taskId", taskId);
+        if(!searchParams.get("taskId")) searchParams.set("taskId", taskId);
         setSearchParams(searchParams);
       }
     } catch (error) {
@@ -263,13 +263,13 @@ const Tasks = () => {
       getDetailTask(taskId);
       getDiscussion(taskId);
     }
-  }, [projectId, isRef]);
+  }, [projectId]);
 
   React.useEffect(() => {
     if (Object.keys(itemDetail).length > 0) {
       getDiscussion(taskId);
     }
-  }, [isRef]);
+  }, []);
 
   return (
     <>
