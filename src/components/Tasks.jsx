@@ -269,7 +269,7 @@ const Tasks = () => {
     if (Object.keys(itemDetail).length > 0) {
       getDiscussion(taskId);
     }
-  }, []);
+  }, [isRef]);
 
   return (
     <>
