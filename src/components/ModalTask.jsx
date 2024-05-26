@@ -139,7 +139,6 @@ const ModalTask = ({ projectId, statusId, data }) => {
 
   const handleCancel = () => {
     dispatch(setOpenModalTask(false));
-    dispatch(setRefresh());
   };
 
   React.useEffect(() => {

@@ -34,13 +34,14 @@ export default function Nav() {
   const activeNav = (id) => {
     setActiveLink(id);
   };
+  const projectIdParams= searchParams.get("projectId")
 
   React.useEffect(() => {
     const pathname = window.location.pathname;
 
     switch (pathname) {
       case "/projects":
-        const projectId = searchParams.get("projectId");
+        const projectId = projectIdParams;
         setActiveLink(+projectId ?? projects?.id);
         break;
       case "/members":
@@ -55,7 +56,7 @@ export default function Nav() {
       default:
         break;
     }
-  }, []);
+  }, [projectIdParams]);
 
   const handleCancel = () => {
     setModalOpen(false);

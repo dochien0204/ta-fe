@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Divider, Tag, Image } from "antd";
+import { Button, Divider, Tag, Image, Popconfirm } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
 import { axiosInstance } from "../api";
@@ -263,7 +263,7 @@ const Tasks = () => {
       getDetailTask(taskId);
       getDiscussion(taskId);
     }
-  }, [projectId]);
+  }, [projectId, isRef]);
 
   React.useEffect(() => {
     if (Object.keys(itemDetail).length > 0) {
@@ -296,6 +296,7 @@ const Tasks = () => {
                 {item.elements.map((ele) => (
                   <div
                     className="task-wrapper__list-item"
+                    style={{border: ele?.id == taskId ? "1px solid #1677ff" : 'none'}}
                     key={ele.id}
                     onClick={() => chooseDetailTask(ele.id)}
                   >
@@ -346,14 +347,22 @@ const Tasks = () => {
                         Cập nhật
                       </Button>
 
-                      <Button
-                        type="primary"
-                        danger
-                        onClick={() => deleteTask()}
-                        icon={<DeleteOutlined />}
+                      <Popconfirm
+                        title="Xóa nhiệm vụ"
+                        description="Bạn có chắc chắn muốn xóa nhiệm vụ này không?"
+                        placement="topRight"
+                        okText="Đồng ý"
+                        cancelText="Hủy"
+                        onConfirm={() => deleteTask()}
                       >
-                        Xóa nhiệm vụ
-                      </Button>
+                        <Button
+                          type="primary"
+                          danger
+                          icon={<DeleteOutlined />}
+                        >
+                          Xóa nhiệm vụ
+                        </Button>
+                      </Popconfirm>
                     </div>
                   </div>
                 </div>

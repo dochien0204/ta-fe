@@ -1,16 +1,39 @@
+import { App } from 'antd';
 import React from 'react';
-import BarChartUI from './home/barchart';
-import TableTask from './home/table-task';
 import { useDispatch } from 'react-redux';
 import { axiosInstance } from '../api';
-import { App } from 'antd';
 import { setLoading } from '../slices/common';
+import BarChartUI from './home/barchart';
+import TableTask from './home/table-task';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
   const { notification } = App.useApp();
   const [tasksTable, setTasksTable] = React.useState([]);
   const [tasksChart, setTaskChart] = React.useState([]);
+  const [overViewCard, setOverViewCard] = React.useState({});
+
+  const getOverviewCard = async () => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await axiosInstance.get('/api/task/overview-card');
+
+    setOverViewCard(response.data.results);
+    } catch (error) {
+      notification.error({
+        description: error.message ?? 'Có lỗi xảy ra!',
+      });
+    }
+    finally {
+      dispatch(setLoading(false));
+    }
+  }
+
+  React.useEffect(() => {
+    getOverviewCard()
+  }, [])
+
   React.useEffect(() => {
     (async () => {
       try {
@@ -118,18 +141,16 @@ export default function Dashboard() {
             <div className='col-md-6 mb-4 stretch-card transparent'>
               <div className='card card-tale'>
                 <div className='card-body'>
-                  <p className='mb-4'>Today’s Bookings</p>
-                  <p className='fs-30 mb-2'>4006</p>
-                  <p>10.00% (30 days)</p>
+                  <p className='mb-4'>Tổng số dự án tham gia</p>
+                  <p className='fs-30 mb-2'>{overViewCard?.totalProject}</p>
                 </div>
               </div>
             </div>
             <div className='col-md-6 mb-4 stretch-card transparent'>
               <div className='card card-dark-blue'>
                 <div className='card-body'>
-                  <p className='mb-4'>Total Bookings</p>
-                  <p className='fs-30 mb-2'>61344</p>
-                  <p>22.00% (30 days)</p>
+                  <p className='mb-4'>Task chưa xong</p>
+                  <p className='fs-30 mb-2'>{overViewCard?.taskClosedToday}</p>
                 </div>
               </div>
             </div>
@@ -138,18 +159,16 @@ export default function Dashboard() {
             <div className='col-md-6 mb-4 mb-lg-0 stretch-card transparent'>
               <div className='card card-light-blue'>
                 <div className='card-body'>
-                  <p className='mb-4'>Number of Meetings</p>
-                  <p className='fs-30 mb-2'>34040</p>
-                  <p>2.00% (30 days)</p>
+                  <p className='mb-4'>Số task cần làm hôm nay</p>
+                  <p className='fs-30 mb-2'>{overViewCard?.taskClosedToday}</p>
                 </div>
               </div>
             </div>
             <div className='col-md-6 stretch-card transparent'>
               <div className='card card-light-danger'>
                 <div className='card-body'>
-                  <p className='mb-4'>Number of Clients</p>
-                  <p className='fs-30 mb-2'>47033</p>
-                  <p>0.22% (30 days)</p>
+                  <p className='mb-4'>Số task còn lại cần làm</p>
+                  <p className='fs-30 mb-2'>{overViewCard?.countTaskRest}</p>
                 </div>
               </div>
             </div>
