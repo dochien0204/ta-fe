@@ -73,6 +73,7 @@ const Discussion = ({ discussion, taskId, currentUserAvatar }) => {
                 alt=""
               /> */}
               <AvatarImage
+                key={userProfile?.id}
                 userId={userProfile?.id}
                 src={userProfile?.avatar}
                 className="w-full h-full rounded-full"
